@@ -23,6 +23,7 @@ public class PMServer {
 	String elname;
 	String elvalue;
 	String strSeparator;
+	boolean isJobCompleted = false;
 	PMServer() {}
 	void run() {
 		try {
@@ -41,6 +42,7 @@ public class PMServer {
 			do {
 				try {
 					message = (String)in.readObject();
+					
 					arMsg = message.split(" ");
 					strCommand = arMsg[0];
 					System.out.println("receive > " + message);

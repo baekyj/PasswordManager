@@ -5,7 +5,7 @@ public class PMClient {
 	Socket requestSocket;
 	ObjectOutputStream out;
  	ObjectInputStream in;
- 	String message;
+ 	String recvMessage;
  	PMClient() {}
 	void run() {
 		try {
@@ -17,19 +17,21 @@ public class PMClient {
 			out = new ObjectOutputStream(requestSocket.getOutputStream());
 			out.flush();
 			in = new ObjectInputStream(requestSocket.getInputStream());
-			String[] msgs = {};
+			String[] msgs = new String[2];
 			msgs[0] = "doChange -path \"C:\\temp 2\\conf\" -file Wfmversion.ini -type ini -elname DBPassword -elvalue 098765";
 			msgs[1] = "doChange -path \"C:\\temp 2\\conf\" -file Wfmversion.ini -type ini -elname DBPassword -elvalue 098765";
 			//3: Communicating with the server
-			//do {
+			do {
 			//for (int i = 0; i < 2; i++) {
 				try {
-					message = (String)in.readObject();
-					System.out.println("from server > " + message);
+					recvMessage = (String)in.readObject();
+					
+					System.out.println("from server > " + recvMessage);
 					
 					//TODO : modify this for Health Checking.
-					sendMessage("Hi my server");
-					showRecvMsg(message);
+					if (recvMessage.equals("Connection successful")) {
+						sendMessage("Hi my server");
+					}
 					//message="doXML";
 					//sendMessage(message);
 					
@@ -38,12 +40,12 @@ public class PMClient {
 					//sendMessage(message);
 					
 					sendMessage("bye");
-					showRecvMsg(message);
+					//showRecvMsg(recvMessage);
 				} catch(ClassNotFoundException classNot) {
 					System.err.println("data received in unknown format");
 				}
 			//}
-			//} while(!message.equals("bye"));
+			} while(!recvMessage.equals("bye"));
 		} catch(UnknownHostException unknownHost) {
 			System.err.println("You are trying to connect to an unknown host!");
 		} catch(IOException ioException) {
@@ -75,7 +77,7 @@ public class PMClient {
 		return String.valueOf(path.indexOf(sep));
 	}
 	public void showRecvMsg(String recvMsg) {
-		System.out.println("from server > " + message);
+		System.out.println("from server > " + recvMsg);
 	}
 	public static void main(String args[]) {
 		PMClient client = new PMClient();
