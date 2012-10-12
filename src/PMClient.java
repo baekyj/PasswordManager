@@ -17,26 +17,33 @@ public class PMClient {
 			out = new ObjectOutputStream(requestSocket.getOutputStream());
 			out.flush();
 			in = new ObjectInputStream(requestSocket.getInputStream());
+			String[] msgs = {};
+			msgs[0] = "doChange -path \"C:\\temp 2\\conf\" -file Wfmversion.ini -type ini -elname DBPassword -elvalue 098765";
+			msgs[1] = "doChange -path \"C:\\temp 2\\conf\" -file Wfmversion.ini -type ini -elname DBPassword -elvalue 098765";
 			//3: Communicating with the server
-			do {
+			//do {
+			//for (int i = 0; i < 2; i++) {
 				try {
 					message = (String)in.readObject();
 					System.out.println("from server > " + message);
 					
 					//TODO : modify this for Health Checking.
 					sendMessage("Hi my server");
+					showRecvMsg(message);
 					//message="doXML";
 					//sendMessage(message);
 					
 					//TODO : below value is handed by args[0] (from batch file argument)
-					message="doChange -path \"C:\\temp 2\\conf\" -file Wfmversion.ini -type ini -elname DBPassword -elvalue 098765";
-					sendMessage(message);
-					message = "bye";
-					sendMessage(message);
+					//message="doChange -path \"C:\\temp 2\\conf\" -file Wfmversion.ini -type ini -elname DBPassword -elvalue 098765";
+					//sendMessage(message);
+					
+					sendMessage("bye");
+					showRecvMsg(message);
 				} catch(ClassNotFoundException classNot) {
 					System.err.println("data received in unknown format");
 				}
-			} while(!message.equals("bye"));
+			//}
+			//} while(!message.equals("bye"));
 		} catch(UnknownHostException unknownHost) {
 			System.err.println("You are trying to connect to an unknown host!");
 		} catch(IOException ioException) {
@@ -66,6 +73,9 @@ public class PMClient {
 	}
 	public String chkSep(String path, String sep) {
 		return String.valueOf(path.indexOf(sep));
+	}
+	public void showRecvMsg(String recvMsg) {
+		System.out.println("from server > " + message);
 	}
 	public static void main(String args[]) {
 		PMClient client = new PMClient();
